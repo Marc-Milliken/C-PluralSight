@@ -12,7 +12,11 @@ namespace Grades
         {
             
             GradeBook book = new GradeBook();
-            book.Name = "Marc's Grade Book:";
+
+            book.nameChanged += OnNameChanged;
+
+            book.Name = "Marc's Grade Book";
+            book.Name = "Grade Book";
             book.AddGrade(91);
             book.AddGrade(89.5f);
             book.AddGrade(75);
@@ -24,6 +28,12 @@ namespace Grades
             WriteResult("Highest", (int)stats.highestGrade);
             WriteResult("Lowest", (int)stats.lowestGrade);
             
+        }
+
+
+        static void OnNameChanged(object sender, NameChangedEventArgs args)
+        {
+            Console.WriteLine($"Grade book changing name from {args.existingName} to {args.newName}");
         }
 
 
