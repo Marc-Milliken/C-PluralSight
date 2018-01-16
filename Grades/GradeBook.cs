@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,9 +19,9 @@ namespace Grades
         public GradeStatistics ComputeStatistics()
         {
             GradeStatistics stats = new GradeStatistics();
-            
+
             float sum = 0;
-            foreach(float grade in grades)
+            foreach (float grade in grades)
             {
                 stats.highestGrade = Math.Max(grade, stats.highestGrade);
                 stats.lowestGrade = Math.Min(grade, stats.lowestGrade);
@@ -32,12 +33,23 @@ namespace Grades
             return stats;
         }
 
+
+        public void WriteGrades(TextWriter destination)
+        {
+            for (int i = grades.Count; i > 0; i--)
+            {
+                destination.WriteLine(grades[i - 1]);
+            }
+        }
+
+
         public void AddGrade(float grade)
         {
 
             grades.Add(grade);
 
         }
+
 
         public String Name
         {
@@ -47,19 +59,22 @@ namespace Grades
             }
             set
             {
-                if (!String.IsNullOrEmpty(value))
+                if (String.IsNullOrEmpty(value))
                 {
-                    if(_name != value)
-                    {
-                        NameChangedEventArgs args = new NameChangedEventArgs();
-                        args.existingName = _name;
-                        args.newName = value;
-
-                        nameChanged(this, args);
-                    }
-
-                    _name = value;
+                    throw new ArgumentException("Name cannot be null or empty");
                 }
+
+                if (_name != value && nameChanged != null)
+                {
+                    NameChangedEventArgs args = new NameChangedEventArgs();
+                    args.existingName = _name;
+                    args.newName = value;
+
+                    nameChanged(this, args);
+                }
+
+                _name = value;
+
             }
         }
 
